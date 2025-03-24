@@ -1,0 +1,162 @@
+/* Estilos CSS para la página */
+/* Estilos generales para el cuerpo del documento */
+body { 
+    font-family: Arial, sans-serif; /* Define la fuente principal */
+    margin: 0; /* Elimina los márgenes del cuerpo */
+    padding: 0; /* Elimina los rellenos del cuerpo */
+    background-color: #f4f4f4; /* Color de fondo gris claro */
+}
+
+/* Estilos para el encabezado */
+.header {
+    background-color: #000; /* Fondo negro */
+    color: #fff; /* Texto blanco */
+    padding: 20px 20px; /* Relleno interno (20px en todas las direcciones) */
+    display: flex; /* Utiliza Flexbox para distribuir el contenido */
+    justify-content: space-between; /* Espacio entre elementos a ambos extremos */
+    align-items: center; /* Alinea los elementos verticalmente en el centro */
+}
+
+/* Estilos para el título del encabezado */
+.header h1 {
+    margin: 0; /* Elimina el margen del título */
+    font-size: 36px; /* Tamaño de fuente más grande */
+    font-family: 'Lilita One', cursive; /* Fuente personalizada para el título */
+}
+
+/* Contenedor para los botones de navegación en el encabezado */
+.header .nav-buttons {
+    display: flex; /* Utiliza Flexbox para los botones */
+    gap: 20px; /* Espacio entre los botones */
+}
+
+/* Estilos para los botones de navegación */
+.header .nav-buttons button {
+    background: none; /* Sin color de fondo */
+    border: none; /* Sin bordes */
+    color: #fff; /* Texto blanco */
+    text-decoration: none; /* Sin subrayado */
+    font-size: 14px; /* Tamaño de fuente pequeño */
+    cursor: pointer; /* Muestra el cursor de mano para indicar que es clickeable */
+}
+ /* Estilos para el menú desplegable */
+ .dropdown {
+    position: relative; /* Posiciona el contenedor relativo al botón */
+    display: inline-block; /* Muestra el contenedor en línea */
+}
+
+.dropdown-content {
+    display: none; /* Oculta el contenido del menú por defecto */
+    position: absolute; /* Posiciona el contenido de forma absoluta */
+    background-color: #fff; /* Fondo blanco */
+    min-width: 160px; /* Ancho mínimo del menú */
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); /* Sombra del menú */
+    z-index: 1; /* Asegura que el menú esté por encima de otros elementos */
+}
+
+.dropdown-content a {
+    color: black; /* Texto negro */
+    padding: 12px 16px; /* Relleno interno */
+    text-decoration: none; /* Sin subrayado */
+    display: block; /* Muestra los enlaces como bloques */
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd; /* Fondo gris claro al pasar el ratón */
+}
+
+.dropdown:hover .dropdown-content {
+    display: block; /* Muestra el contenido del menú al pasar el ratón */
+}
+
+
+/* Estilos para el título principal de la página */
+.title {
+    text-align: center; /* Centra el texto */
+    margin: 20px 0; /* Margen vertical */
+    font-size: 24px; /* Tamaño de fuente del título */
+    font-family: 'Open Sans', sans-serif; /* Fuente personalizada */
+}
+
+/* Estilos para el contenedor principal de las tarjetas */
+.container {
+    display: grid; /* Utiliza CSS Grid */
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Columnas adaptables con un ancho mínimo de 300px */
+    gap: 40px; /* Espacio entre las tarjetas */
+    justify-content: center; /* Centra las tarjetas en el contenedor */
+    padding: 0 20px; /* Relleno lateral */
+}
+
+/* Estilos para las tarjetas */
+.card {
+    background-color: #fff; /* Fondo blanco */
+    border: 2px solid #000; /* Borde negro de 2px */
+    border-radius: 10px; /* Bordes redondeados */
+    width: 80%; /* La tarjeta ocupa todo el ancho disponible de su columna */
+    padding: 10px; /* Relleno interno */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra ligera alrededor de la tarjeta */
+    overflow: hidden; /* Oculta cualquier contenido que desborde la tarjeta */
+}
+
+/* Estilos para el título de las tarjetas */
+.card h2 {
+    font-size: 18px; /* Tamaño de fuente */
+    margin: 0 0 10px 0; /* Sin margen superior, pero con margen inferior */
+    text-align: center; /* Centra el título */
+    position: sticky; /* El título se mantiene visible cuando se hace scroll */
+    top: 0; /* Fija el título en la parte superior de la tarjeta */
+    background-color: #fff; /* Fondo blanco para el título */
+    z-index: 1; /* Asegura que el título esté por encima del contenido */
+    padding: 10px 0; /* Relleno en el título */
+}
+
+/* Estilos para la lista dentro de las tarjetas */
+.card ul {
+    list-style: none; /* Elimina los puntos de lista */
+    padding: 0; /* Sin relleno */
+    margin: 0; /* Sin margen */
+    height: 100px; /* Altura fija para la lista */
+    overflow-y: auto; /* Barra de desplazamiento vertical si el contenido excede la altura */
+}
+
+/* Estilos para cada ítem de la lista */
+.card ul li {
+    margin: 5px 0; /* Espaciado vertical entre los ítems */
+}
+
+/* Estilos para la sección de especificaciones de cada ítem */
+.card .specifications {
+    background-color: #f0f0f0; /* Fondo gris claro */
+    border: 1px solid #ccc; /* Borde gris claro */
+    border-radius: 5px; /* Bordes redondeados */
+    padding: 5px; /* Relleno */
+    margin-top: 5px; /* Margen superior */
+    font-size: 12px; /* Tamaño de fuente pequeño */
+}
+
+/* Estilos para la sección de estado dentro de las tarjetas */
+.card .status {
+    display: flex; /* Utiliza Flexbox */
+    justify-content: space-between; /* Distribuye los botones de estado a los extremos */
+    margin-top: 10px; /* Margen superior */
+}
+
+/* Estilos para los botones de estado */
+.card .status .btn {
+    padding: 3px 5px; /* Relleno interno de los botones */
+    border-radius: 5px; /* Bordes redondeados */
+    font-size: 12px; /* Tamaño de fuente pequeño */
+    color: #fff; /* Texto blanco */
+    border: none; /* Sin borde */
+    cursor: pointer; /* Muestra el cursor de mano */
+}
+
+/* Estilos para el botón de "En Proceso" */
+.card .status .in-process {
+    background-color: #ffa500; /* Color de fondo naranja */
+}
+
+/* Estilos para el botón de "Finalizado" */
+.card .status .finished {
+    background-color: #32cd32; /* Color de fondo verde */
+}

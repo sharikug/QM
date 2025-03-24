@@ -1,0 +1,71 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f4f4f4;
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Contenedor de la tabla */
+.table-container {
+    max-width: 800px; /* Ancho máximo de la tabla */
+    margin: 0 auto; /* Centrar horizontalmente */
+    background-color: #fff; /* Fondo blanco para la tabla */
+    padding: 20px;
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra para dar efecto de elevación */
+}
+
+/* Estilos de la tabla */
+table {
+    border-collapse: collapse;
+    width: 100%; /* Asegúrate de que la tabla ocupe el 100% del ancho del contenedor */
+}
+
+th, td {
+    padding: 12px;
+    text-align: center; /* Centrar texto en celdas */
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+    color: #333;
+    text-transform: uppercase;
+}
+
+td {
+    background-color: #fff;
+}
+
+/* Filas pares de la tabla */
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Estilos para el último tr que muestra totales */
+table tr:last-child td {
+    font-weight: bold;
+    background-color: #f2f2f2; /* Fondo gris claro para la fila de totales */
+}
+
+td[colspan="4"] {
+    text-align: right;
+}
+
+/* Estilos responsivos */
+@media screen and (max-width: 768px) {
+    th, td {
+        padding: 10px; /* Reducir el padding en pantallas más pequeñas */
+    }
+
+    table {
+        font-size: 14px; /* Tamaño de fuente más pequeño */
+    }
+}
