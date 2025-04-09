@@ -1,25 +1,21 @@
 package Controller;
 
 import Model.QualityDocument;
-import view.DocumentRegistrationView;
+import View.DocumentRegistrationView;
 import dataBase.DocumentRepository;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 
 public class DocumentController {
 
     private DocumentRegistrationView view;
-    private List<QualityDocument> documents;
-    private DocumentRepository repository = new DocumentRepository();
+    private DocumentRepository repository;
 
     public DocumentController(DocumentRegistrationView view) {
         this.view = view;
-        this.documents = new ArrayList<>();
-
+        this.repository = new DocumentRepository();
         initController();
     }
 
@@ -27,48 +23,31 @@ public class DocumentController {
         view.getSaveButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                saveDocument();
-            }
-        });
-
-        view.getBrowseButton().addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-            int option = fileChooser.showOpenDialog(view);
-            if (option == JFileChooser.APPROVE_OPTION) {
-                String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-                view.getFilePathField().setText(filePath);
+                registerDocument();
             }
         });
     }
 
-    private void saveDocument() {
-        String title = view.getTitleInput();
-        String author = view.getAuthorInput();
-        String category = view.getCategoryInput();
-        String filePath = view.getFilePath();
-        var date = view.getDateInput();
+    private void registerDocument() {
+        String title = view.getTitleField().getText();
+        String author = view.getAuthorField().getText();
+        String category = (String) view.getCategoryCombo().getSelectedItem();
+        LocalDate date = view.getSelectedDate();
+        String filePath = view.getFilePath(); // podrías obtener esto desde un file chooser
 
-        // Validaciones básicas
-        if (title.isEmpty() || author.isEmpty() || category.isEmpty()) {
-            JOptionPane.showMessageDialog(view, "All fields except file are required.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+        if (title.isEmpty() || author.isEmpty() || category == null || filePath == null) {
+            view.showMessage("All fields are required.");
             return;
         }
 
         QualityDocument doc = new QualityDocument(title, author, category, date, filePath);
-        repository.saveDocument(doc);
+        boolean success = repository.saveDocument(doc);
 
-        JOptionPane.showMessageDialog(view, "Document saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-        clearForm();
-    }
-
-    private void clearForm() {
-        view.getTitleField().setText("");
-        view.getAuthorField().setText("");
-        view.getCategoryCombo().setSelectedIndex(0);
-        view.getFilePathField().setText("");
-    }
-
-    public List<QualityDocument> getDocuments() {
-        return documents;
+        if (success) {
+            view.showMessage("Document saved successfully!");
+            view.clearForm();
+        } else {
+            view.showMessage("Error saving document.");
+        }
     }
 }
