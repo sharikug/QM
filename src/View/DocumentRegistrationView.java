@@ -12,93 +12,87 @@ public class DocumentRegistrationView extends JFrame {
     private JTextField authorField;
     private JComboBox<String> categoryCombo;
     private JSpinner dateSpinner;
-    private JButton browseButton;
     private JTextField filePathField;
+    private JButton uploadButton;
     private JButton saveButton;
+    private JButton reportButton;
+    private JButton customReportButton;
 
     public DocumentRegistrationView() {
-        setTitle("Register Quality Document");
+        setTitle("Registro de Documentos de Calidad");
         setSize(500, 400);
-        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridBagLayout());
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-
-        // Title
-        add(new JLabel("Title:"), gbc);
-        gbc.gridx = 1;
-        titleField = new JTextField(20);
-        add(titleField, gbc);
-
-        // Author
-        gbc.gridx = 0;
-        gbc.gridy++;
-        add(new JLabel("Author:"), gbc);
-        gbc.gridx = 1;
-        authorField = new JTextField(20);
-        add(authorField, gbc);
-
-        // Category
-        gbc.gridx = 0;
-        gbc.gridy++;
-        add(new JLabel("Category:"), gbc);
-        gbc.gridx = 1;
-        categoryCombo = new JComboBox<>(new String[]{"Procedimiento", "Manual", "Reglamento", "Política"});
-        add(categoryCombo, gbc);
-
-        // Date
-        gbc.gridx = 0;
-        gbc.gridy++;
-        add(new JLabel("Date:"), gbc);
-        gbc.gridx = 1;
-        dateSpinner = new JSpinner(new SpinnerDateModel());
-        dateSpinner.setEditor(new JSpinner.DateEditor(dateSpinner, "yyyy-MM-dd"));
-        add(dateSpinner, gbc);
-
-        // File chooser
-        gbc.gridx = 0;
-        gbc.gridy++;
-        add(new JLabel("File Path:"), gbc);
-        gbc.gridx = 1;
-        filePathField = new JTextField(20);
-        filePathField.setEditable(false);
-        add(filePathField, gbc);
-
-        gbc.gridx = 2;
-        browseButton = new JButton("Browse...");
-        add(browseButton, gbc);
-
-        // Save button
-        gbc.gridx = 1;
-        gbc.gridy++;
-        saveButton = new JButton("Save Document");
-        add(saveButton, gbc);
-
-        browseButton.addActionListener(e -> chooseFile());
-
-        setVisible(true);
+        setLocationRelativeTo(null);
+        initComponents();
     }
 
-    private void chooseFile() {
+    private void initComponents() {
+        setLayout(new GridLayout(8, 2, 10, 10));
+
+        JLabel titleLabel = new JLabel("Título:");
+        titleField = new JTextField();
+
+        JLabel authorLabel = new JLabel("Autor:");
+        authorField = new JTextField();
+
+        JLabel categoryLabel = new JLabel("Categoría:");
+        categoryCombo = new JComboBox<>(new String[]{"Procedimiento", "Instructivo", "Manual", "Otro"});
+
+        JLabel dateLabel = new JLabel("Fecha:");
+        dateSpinner = new JSpinner(new SpinnerDateModel());
+        JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(dateSpinner, "yyyy-MM-dd");
+        dateSpinner.setEditor(dateEditor);
+
+        JLabel fileLabel = new JLabel("Archivo:");
+        filePathField = new JTextField();
+        filePathField.setEditable(false);
+        uploadButton = new JButton("Subir Archivo");
+        uploadButton.addActionListener(e -> openFileChooser());
+
+        saveButton = new JButton("Guardar Documento");
+        reportButton = new JButton("Ver Reportes");
+        customReportButton = new JButton("Reporte Personalizado");
+
+        // Agregar componentes
+        add(titleLabel);
+        add(titleField);
+
+        add(authorLabel);
+        add(authorField);
+
+        add(categoryLabel);
+        add(categoryCombo);
+
+        add(dateLabel);
+        add(dateSpinner);
+
+        add(fileLabel);
+        add(filePathField);
+        add(new JLabel()); // espacio vacío
+        add(uploadButton);
+
+        add(saveButton);
+        add(reportButton);
+        add(new JLabel()); // espacio vacío
+        add(customReportButton);
+    }
+
+    private void openFileChooser() {
         JFileChooser fileChooser = new JFileChooser();
-        int option = fileChooser.showOpenDialog(this);
-        if (option == JFileChooser.APPROVE_OPTION) {
+        int result = fileChooser.showOpenDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
             filePathField.setText(fileChooser.getSelectedFile().getAbsolutePath());
         }
     }
 
-    // === Getters para el controlador ===
-    public JTextField getTitleField() {
-        return titleField;
+    // Métodos de acceso (getters)
+    public String getTitleField() {
+        return titleField.getText();
     }
 
-    public JTextField getAuthorField() {
-        return authorField;
+    public String getAuthorField() {
+        return authorField.getText();
     }
 
     public JComboBox<String> getCategoryCombo() {
@@ -118,15 +112,15 @@ public class DocumentRegistrationView extends JFrame {
         return saveButton;
     }
 
-    public void showMessage(String msg) {
-        JOptionPane.showMessageDialog(this, msg);
+    public JButton getReportButton() {
+        return reportButton;
     }
 
-    public void clearForm() {
-        titleField.setText("");
-        authorField.setText("");
-        filePathField.setText("");
-        categoryCombo.setSelectedIndex(0);
-        dateSpinner.setValue(new Date());
+    public JButton getCustomReportButton() {
+        return customReportButton;
+    }
+
+    public void showMessage(String message) {
+        JOptionPane.showMessageDialog(this, message);
     }
 }

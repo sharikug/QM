@@ -1,41 +1,38 @@
 package Controller;
 
 import Model.QualityDocument;
+import View.CustomReportView;
 import View.DocumentRegistrationView;
-import dataBase.DocumentRepository;
+import View.ReportView;
+import dataBase.QualityDocumentRepository;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.time.LocalDate;
 
 public class DocumentController {
 
     private DocumentRegistrationView view;
-    private DocumentRepository repository;
+    private QualityDocumentRepository repository;
 
-    public DocumentController(DocumentRegistrationView view) {
+    public DocumentController(DocumentRegistrationView view, QualityDocumentRepository repository) {
         this.view = view;
-        this.repository = new DocumentRepository();
+        this.repository = repository;
         initController();
     }
 
     private void initController() {
-        view.getSaveButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                registerDocument();
-            }
-        });
+        view.getSaveButton().addActionListener(e -> registerDocument());
+        view.getReportButton().addActionListener(e -> openReportView());
+        view.getCustomReportButton().addActionListener(e -> openCustomReportView());
     }
 
     private void registerDocument() {
-        String title = view.getTitleField().getText();
-        String author = view.getAuthorField().getText();
+        String title = view.getTitleField();
+        String author = view.getAuthorField();
         String category = (String) view.getCategoryCombo().getSelectedItem();
         LocalDate date = view.getSelectedDate();
-        String filePath = view.getFilePath(); // podrías obtener esto desde un file chooser
+        String filePath = view.getFilePath();
 
-        if (title.isEmpty() || author.isEmpty() || category == null || filePath == null) {
+        if (title.isEmpty() || author.isEmpty() || category == null || date == null || filePath.isEmpty()) {
             view.showMessage("All fields are required.");
             return;
         }
@@ -44,10 +41,19 @@ public class DocumentController {
         boolean success = repository.saveDocument(doc);
 
         if (success) {
-            view.showMessage("Document saved successfully!");
-            view.clearForm();
+            view.showMessage("Document registered successfully.");
         } else {
-            view.showMessage("Error saving document.");
+            view.showMessage("Error registering document.");
         }
+    }
+
+    private void openReportView() {
+        ReportView reportView = new ReportView();
+        reportView.setVisible(true);
+    }
+
+    private void openCustomReportView() {
+        CustomReportView customReportView = new CustomReportView();
+        customReportView.setVisible(true);
     }
 }

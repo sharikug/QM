@@ -1,210 +1,174 @@
 package View;
 
+import Model.QualityDocument;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
 public class CustomReportView extends JFrame {
+    private JComboBox<String> tipoReporteCombo;
+    private JSpinner fromDatePicker;
+    private JSpinner toDatePicker;
 
-    private JComboBox<String> reportTypeCombo;
-    private JSpinner fromDateSpinner, toDateSpinner;
-    private JButton generateButton;
-    private JTable resultsTable;
+    private JTextField categoriaInsumoField;
+    private JTextField stockField;
+
+    private JTextField tipoProblemaField;
+    private JTextField estadoReclamoField;
+
+    private JTextField personalField;
+    private JTextField turnoField;
+
+    private JTextField autorField;
+
+    private JButton btnGenerar;
+    private JButton btnVolver;
+
+    private JTable resultadosTable;
     private DefaultTableModel tableModel;
 
-    // Filtros dinámicos
-    private JComboBox<String> categoryCombo;
-    private JComboBox<String> stockCombo;
-    private JComboBox<String> problemTypeCombo;
-    private JComboBox<String> statusCombo;
-    private JComboBox<String> personnelCombo;
-    private JComboBox<String> shiftCombo;
-
-    private JPanel filtersPanel;
-
     public CustomReportView() {
-        setTitle("Generate Reports");
+        setTitle("Generador de Reportes Personalizados");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 600);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
 
-        JPanel mainPanel = new JPanel(new GridBagLayout());
-        filtersPanel = new JPanel(new GridBagLayout());
+        JPanel panel = new JPanel(new GridLayout(0, 2, 10, 10));
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        // Report type
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        mainPanel.add(new JLabel("Report Type:"), gbc);
-
-        gbc.gridx = 1;
-        reportTypeCombo = new JComboBox<>(new String[]{
+        tipoReporteCombo = new JComboBox<>(new String[]{
                 "Ventas", "Inventario", "Productos más vendidos",
-                "Desempeño del personal", "Reporte de reclamos/problemas",
-                "Reporte personalizado"
+                "Desempeño del personal", "Reporte de reclamos/problemas", "Reporte personalizado"
         });
-        mainPanel.add(reportTypeCombo, gbc);
 
-        // Date range
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        mainPanel.add(new JLabel("From:"), gbc);
+        fromDatePicker = new JSpinner(new SpinnerDateModel());
+        toDatePicker = new JSpinner(new SpinnerDateModel());
+        fromDatePicker.setEditor(new JSpinner.DateEditor(fromDatePicker, "yyyy-MM-dd"));
+        toDatePicker.setEditor(new JSpinner.DateEditor(toDatePicker, "yyyy-MM-dd"));
 
-        gbc.gridx = 1;
-        fromDateSpinner = new JSpinner(new SpinnerDateModel());
-        fromDateSpinner.setEditor(new JSpinner.DateEditor(fromDateSpinner, "yyyy-MM-dd"));
-        mainPanel.add(fromDateSpinner, gbc);
+        categoriaInsumoField = new JTextField();
+        stockField = new JTextField();
 
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        mainPanel.add(new JLabel("To:"), gbc);
+        tipoProblemaField = new JTextField();
+        estadoReclamoField = new JTextField();
 
-        gbc.gridx = 1;
-        toDateSpinner = new JSpinner(new SpinnerDateModel());
-        toDateSpinner.setEditor(new JSpinner.DateEditor(toDateSpinner, "yyyy-MM-dd"));
-        mainPanel.add(toDateSpinner, gbc);
+        personalField = new JTextField();
+        turnoField = new JTextField();
 
-        // Dynamic filters panel
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 2;
-        mainPanel.add(filtersPanel, gbc);
+        autorField = new JTextField();
 
-        // Generate button
-        gbc.gridy = 4;
-        gbc.gridwidth = 2;
-        generateButton = new JButton("Generate Report");
-        mainPanel.add(generateButton, gbc);
+        btnGenerar = new JButton("Generar Reporte");
+        btnVolver = new JButton("Volver al Registro");
 
-        add(mainPanel, BorderLayout.NORTH);
+        panel.add(new JLabel("Tipo de Reporte:"));
+        panel.add(tipoReporteCombo);
 
-        // Table
-        String[] columns = {"Title", "Author", "Category", "Date", "File Path"};
-        tableModel = new DefaultTableModel(columns, 0);
-        resultsTable = new JTable(tableModel);
-        JScrollPane tableScroll = new JScrollPane(resultsTable);
-        add(tableScroll, BorderLayout.CENTER);
+        panel.add(new JLabel("Desde:"));
+        panel.add(fromDatePicker);
 
-        initDynamicFilters();
-        reportTypeCombo.addActionListener(e -> updateDynamicFilters());
+        panel.add(new JLabel("Hasta:"));
+        panel.add(toDatePicker);
 
-        setVisible(true);
+        panel.add(new JLabel("Categoría de Insumo:"));
+        panel.add(categoriaInsumoField);
+
+        panel.add(new JLabel("Stock:"));
+        panel.add(stockField);
+
+        panel.add(new JLabel("Tipo de Problema:"));
+        panel.add(tipoProblemaField);
+
+        panel.add(new JLabel("Estado del Reclamo:"));
+        panel.add(estadoReclamoField);
+
+        panel.add(new JLabel("Personal:"));
+        panel.add(personalField);
+
+        panel.add(new JLabel("Turno:"));
+        panel.add(turnoField);
+
+        panel.add(new JLabel("Autor:"));
+        panel.add(autorField);
+
+        panel.add(btnGenerar);
+        panel.add(btnVolver);
+
+        tableModel = new DefaultTableModel();
+        tableModel.setColumnIdentifiers(new String[]{"ID", "Título", "Autor", "Categoría", "Fecha", "Archivo"});
+        resultadosTable = new JTable(tableModel);
+
+        getContentPane().add(panel, BorderLayout.NORTH);
+        getContentPane().add(new JScrollPane(resultadosTable), BorderLayout.CENTER);
     }
 
-    private void initDynamicFilters() {
-        categoryCombo = new JComboBox<>(new String[]{"Insumo A", "Insumo B"});
-        stockCombo = new JComboBox<>(new String[]{"Bajo", "Medio", "Alto"});
-        problemTypeCombo = new JComboBox<>(new String[]{"Retraso", "Calidad", "Otro"});
-        statusCombo = new JComboBox<>(new String[]{"Resuelto", "Pendiente"});
-        personnelCombo = new JComboBox<>(new String[]{"Juan", "Ana", "Carlos"});
-        shiftCombo = new JComboBox<>(new String[]{"Mañana", "Tarde", "Noche"});
+    public JComboBox<String> getTipoReporteCombo() {
+        return tipoReporteCombo;
     }
 
-    private void updateDynamicFilters() {
-        filtersPanel.removeAll();
-        String selected = (String) reportTypeCombo.getSelectedItem();
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-
-        if (selected.equals("Inventario")) {
-            filtersPanel.add(new JLabel("Categoría de insumo:"), gbc);
-            gbc.gridx = 1;
-            filtersPanel.add(categoryCombo, gbc);
-
-            gbc.gridx = 0;
-            gbc.gridy++;
-            filtersPanel.add(new JLabel("Stock:"), gbc);
-            gbc.gridx = 1;
-            filtersPanel.add(stockCombo, gbc);
-        } else if (selected.equals("Reporte de reclamos/problemas")) {
-            filtersPanel.add(new JLabel("Tipo de problema:"), gbc);
-            gbc.gridx = 1;
-            filtersPanel.add(problemTypeCombo, gbc);
-
-            gbc.gridx = 0;
-            gbc.gridy++;
-            filtersPanel.add(new JLabel("Estado:"), gbc);
-            gbc.gridx = 1;
-            filtersPanel.add(statusCombo, gbc);
-        } else if (selected.equals("Desempeño del personal")) {
-            filtersPanel.add(new JLabel("Personal:"), gbc);
-            gbc.gridx = 1;
-            filtersPanel.add(personnelCombo, gbc);
-
-            gbc.gridx = 0;
-            gbc.gridy++;
-            filtersPanel.add(new JLabel("Turno:"), gbc);
-            gbc.gridx = 1;
-            filtersPanel.add(shiftCombo, gbc);
-        }
-
-        filtersPanel.revalidate();
-        filtersPanel.repaint();
+    public LocalDate getFromDate() {
+        return convertToLocalDate((Date) fromDatePicker.getValue());
     }
 
-    public JComboBox<String> getReportTypeCombo() {
-        return reportTypeCombo;
+    public LocalDate getToDate() {
+        return convertToLocalDate((Date) toDatePicker.getValue());
     }
 
-    public LocalDate getDateFrom() {
-        Date date = (Date) fromDateSpinner.getValue();
-        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    public String getCategoriaInsumo() {
+        return categoriaInsumoField.getText();
     }
 
-    public LocalDate getDateTo() {
-        Date date = (Date) toDateSpinner.getValue();
-        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    public String getStock() {
+        return stockField.getText();
     }
 
-    public JButton getGenerateButton() {
-        return generateButton;
+    public String getTipoProblema() {
+        return tipoProblemaField.getText();
     }
 
-    public void updateTable(java.util.List<Model.QualityDocument> docs) {
+    public String getEstadoReclamo() {
+        return estadoReclamoField.getText();
+    }
+
+    public String getPersonal() {
+        return personalField.getText();
+    }
+
+    public String getTurno() {
+        return turnoField.getText();
+    }
+
+    public String getAutor() {
+        return autorField.getText();
+    }
+
+    public JButton getBtnGenerar() {
+        return btnGenerar;
+    }
+
+    public JButton getBtnVolver() {
+        return btnVolver;
+    }
+
+    public void mostrarResultados(List<QualityDocument> documentos) {
         tableModel.setRowCount(0);
-        for (Model.QualityDocument doc : docs) {
+        for (QualityDocument doc : documentos) {
             tableModel.addRow(new Object[]{
-                    doc.getTitle(),
-                    doc.getAuthor(),
-                    doc.getCategory(),
-                    doc.getDate().toString(),
-                    doc.getFilePath()
+                    doc.getTitle(), doc.getAuthor(),
+                    doc.getCategory(), doc.getDate(), doc.getFilePath()
             });
         }
     }
 
-    // Getters de los combos dinámicos (opcional para el controlador)
-    public JComboBox<String> getCategoryCombo() {
-        return categoryCombo;
+    private LocalDate convertToLocalDate(Date dateToConvert) {
+        return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
-    public JComboBox<String> getStockCombo() {
-        return stockCombo;
-    }
-
-    public JComboBox<String> getProblemTypeCombo() {
-        return problemTypeCombo;
-    }
-
-    public JComboBox<String> getStatusCombo() {
-        return statusCombo;
-    }
-
-    public JComboBox<String> getPersonnelCombo() {
-        return personnelCombo;
-    }
-
-    public JComboBox<String> getShiftCombo() {
-        return shiftCombo;
+    public void goBackToRegistration() {
+        this.dispose();
+        new DocumentRegistrationView().setVisible(true);
     }
 }

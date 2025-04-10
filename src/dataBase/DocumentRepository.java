@@ -34,6 +34,53 @@ public class DocumentRepository {
             return false;
         }
     }
+    public List<QualityDocument> getFilteredDocuments(String keyword, String category, String author) {
+        List<QualityDocument> results = new ArrayList<>();
+
+        StringBuilder sql = new StringBuilder("SELECT * FROM quality_documents WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+
+        if (!keyword.isEmpty()) {
+            sql.append(" AND LOWER(title) LIKE ?");
+            params.add("%" + keyword + "%");
+        }
+
+        if (!"All".equals(category)) {
+            sql.append(" AND category = ?");
+            params.add(category);
+        }
+
+        if (!"All".equals(author)) {
+            sql.append(" AND author = ?");
+            params.add(author);
+        }
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                QualityDocument doc = new QualityDocument(
+                        rs.getString("title"),
+                        rs.getString("author"),
+                        rs.getString("category"),
+                        rs.getDate("date").toLocalDate(),
+                        rs.getString("file_path")
+                );
+                results.add(doc);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return results;
+    }
+
     public List<QualityDocument> getDocumentsBetweenDates(LocalDate from, LocalDate to) {
         List<QualityDocument> documents = new ArrayList<>();
         String sql = "SELECT * FROM quality_documents WHERE date BETWEEN ? AND ?";
